@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <div class="header">
+        <h1>📚 Bibliography Cleaner</h1>
+        <p>Remove unused citations from your .bib files effortlessly</p>
+    </div>
+    
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-danger">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    
+    <div class="info-box">
+        <h3>How it works:</h3>
+        <div class="step"><strong>Step 1:</strong> Run <code>checkcites output.aux > unused_keys.txt</code> to find unused citations</div>
+        <div class="step"><strong>Step 2:</strong> Upload your original .bib file and the unused keys file below</div>
+        <div class="step"><strong>Step 3:</strong> Download your cleaned bibliography file!</div>
+    </div>
+    
+    <form action="{{ url_for('upload_files') }}" method="POST" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="bib_file">📖 Bibliography File (.bib)</label>
+            <input type="file" 
+                   class="form-control" 
+                   id="bib_file" 
+                   name="bib_file" 
+                   accept=".bib" 
+                   required>
+            <small style="color: #666;">Your original bibliography file</small>
+        </div>
+        
+        <div class="form-group">
+            <label for="unused_keys_file">🔍 Unused Keys File (.txt)</label>
+            <input type="file" 
+                   class="form-control" 
+                   id="unused_keys_file" 
+                   name="unused_keys_file" 
+                   accept=".txt" 
+                   required>
+            <small style="color: #666;">Output from <code>checkcites output.aux > unused_keys.txt</code></small>
+        </div>
+        
+        <div class="text-center">
+            <button type="submit" class="btn">🧹 Clean Bibliography</button>
+        </div>
+    </form>
+</div>
+
+<div class="card">
+    <h3>Need help getting the unused keys file?</h3>
+    <p><strong>For LaTeX/Overleaf users:</strong></p>
+    <ol>
+        <li>Download your <code>output.aux</code> file from the logs panel in Overleaf</li>
+        <li>Install checkcites: <code>sudo apt-get install checkcites</code> or similar for your OS</li>
+        <li>Run: <code>checkcites output.aux > unused_keys.txt</code></li>
+        <li>Upload both your .bib file and the generated unused_keys.txt file above</li>
+    </ol>
+    
+    <p><strong>Don't have checkcites?</strong> You can also create the unused keys file manually by listing unused citation keys in this format:</p>
+    <pre style="background: #f8f9fa; padding: 10px; border-radius: 4px;">=> unused_key_1
+=> unused_key_2
+=> unused_key_3</pre>
+</div>
+{% endblock %}
